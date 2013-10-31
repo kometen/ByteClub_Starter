@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="13A598" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="sLj-Dl-kf0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A598" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="sLj-Dl-kf0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -109,9 +109,18 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="dpW-MM-KK5"/>
+                    <navigationItem key="navigationItem" id="dpW-MM-KK5">
+                        <barButtonItem key="leftBarButtonItem" style="plain" systemItem="cancel" id="LAD-r5-kgs">
+                            <connections>
+                                <action selector="cancel:" destination="Ffn-5M-Be7" id="ive-Gc-0GJ"/>
+                            </connections>
+                        </barButtonItem>
+                        <connections>
+                            <outlet property="leftBarButtonItem" destination="LAD-r5-kgs" id="FjF-mo-oc4"/>
+                        </connections>
+                    </navigationItem>
                     <connections>
-                        <outlet property="downloadView" destination="aVm-YC-gfJ" id="xqJ-Xa-Sjq"/>
+                        <outlet property="downloadedFileImageView" destination="aVm-YC-gfJ" id="jNr-hf-MC8"/>
                         <outlet property="label" destination="2Ea-bt-9Yt" id="9nf-v6-q2s"/>
                         <outlet property="progress" destination="e6z-WJ-VYB" id="TkF-uM-Kv3"/>
                     </connections>
@@ -369,6 +378,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="thumbnailImage" destination="TfP-oG-f1a" id="y7R-5D-A5r"/>
+                                            <segue destination="eAc-eG-BSU" kind="modal" identifier="showThumbnail" id="GRS-jd-sl2"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -445,7 +455,6 @@
                         <outlet property="progress" destination="GPq-Fh-6pu" id="vdR-GK-dpE"/>
                         <outlet property="tableView" destination="a6X-Hb-f86" id="yU9-NI-I76"/>
                         <outlet property="uploadView" destination="UU4-XN-lmQ" id="rKM-CR-dvJ"/>
-                        <segue destination="eAc-eG-BSU" kind="modal" identifier="showThumbnail" id="6G5-8x-vfz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hme-Na-a2w" userLabel="First Responder" sceneMemberID="firstResponder"/>

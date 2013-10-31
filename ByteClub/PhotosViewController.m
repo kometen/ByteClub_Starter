@@ -240,16 +240,15 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    UINavigationController *navigationController = segue.destinationViewController;
-    DownloadViewController *showImage = (DownloadViewController*)navigationController.topViewController;
-    showImage.delegate = self;
-    showImage.session = _session;
-    
-    
     if ([segue.identifier isEqualToString:@"showThumbnail"]) {
+        UINavigationController *navigationController = segue.destinationViewController;
+        DownloadViewController *showImageVC = (DownloadViewController*)navigationController.topViewController;
+        showImageVC.delegate = self;
+        showImageVC.session = _session;
         NSInteger row = [self.tableView indexPathForSelectedRow].row;
         DBFile *selectedThumbnail =  _photoThumbnails[row];
-        showImage.thumbnail = selectedThumbnail;
+        showImageVC.thumbnail = selectedThumbnail;
+        NSLog(@"showImage.thumbnail.path: %@", showImageVC.thumbnail.path);
     }
 }
 

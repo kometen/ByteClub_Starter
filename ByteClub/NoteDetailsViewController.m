@@ -129,7 +129,6 @@
 
 - (IBAction)cancel:(id)sender
 {
-    
     [self.delegate noteDetailsViewControllerDidCancel:self];
 }
 
