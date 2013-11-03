@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Razeware. All rights reserved.
 //
 
+#import "DownloadViewController.h"
 #import "PhotosViewController.h"
 #import "PhotoCell.h"
 #import "Dropbox.h"
 #import "DBFile.h"
-#import "DownloadViewController.h"
 
 @interface PhotosViewController ()<UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NSURLSessionTaskDelegate, DownloadViewControllerDelegate>
 
@@ -134,7 +134,7 @@
         if (self.tableView.dragging == NO && self.tableView.decelerating == NO)
         {
             if(photo.thumbExists) {
-                NSString *urlString = [NSString stringWithFormat:@"https://api-content.dropbox.com/1/thumbnails/dropbox%@?size=xl",photo.path];
+                NSString *urlString = [NSString stringWithFormat:@"https://api-content.dropbox.com/1/thumbnails/dropbox%@?size=l",photo.path];
                 NSString *encodedUrl = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 NSURL *url = [NSURL URLWithString:encodedUrl];
                 NSLog(@"logging this url so no warning in starter project %@",url);
@@ -240,15 +240,16 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    UINavigationController *navigationController = segue.destinationViewController;
+    DownloadViewController *showImageVC = (DownloadViewController*)navigationController.topViewController;
+    showImageVC.delegate = self;
+    showImageVC.session = _session;
+
     if ([segue.identifier isEqualToString:@"showThumbnail"]) {
-        UINavigationController *navigationController = segue.destinationViewController;
-        DownloadViewController *showImageVC = (DownloadViewController*)navigationController.topViewController;
-        showImageVC.delegate = self;
-        showImageVC.session = _session;
         NSInteger row = [self.tableView indexPathForSelectedRow].row;
         DBFile *selectedThumbnail =  _photoThumbnails[row];
-        showImageVC.thumbnail = selectedThumbnail;
-        NSLog(@"showImage.thumbnail.path: %@", showImageVC.thumbnail.path);
+        showImageVC.myImage = selectedThumbnail;
+        NSLog(@"showImage.thumbnail.path: %@", showImageVC.myImage.path);
     }
 }
 

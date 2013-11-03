@@ -20,7 +20,7 @@
 @interface DownloadViewController : UIViewController
 
 @property (nonatomic, weak) id<DownloadViewControllerDelegate> delegate;
-@property (nonatomic, strong) DBFile *thumbnail;
+@property (nonatomic, strong) DBFile *myImage;
 @property (nonatomic, strong) NSURLSession *session;
 
 @end

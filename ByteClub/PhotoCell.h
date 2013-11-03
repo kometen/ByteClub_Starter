@@ -11,6 +11,7 @@
 @interface PhotoCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *thumbnailImage;
+@property (nonatomic, strong) IBOutlet UIImageView *downloadableImage;
 @property (nonatomic, strong) IBOutlet UILabel *fileName;
 
 @end
