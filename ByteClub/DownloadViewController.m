@@ -64,7 +64,7 @@
 // stackoverflow.com/questions/12551070/display-the-tableview-row-selected-in-nslog
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    _messageLabel.text = @"Tap Tap";
+    _messageLabel.text = @"Downloading image ...";
     [self downloadImage];
 }
 
@@ -103,7 +103,10 @@
 
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
 {
-    NSLog(@"Image downloaded");
+    _messageLabel.text = @"Image copied to album";
+    UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
+    
+    UIImageWriteToSavedPhotosAlbum(downloadedImage, nil, nil, nil);
 }
 
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
