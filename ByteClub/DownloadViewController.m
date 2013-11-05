@@ -9,16 +9,15 @@
 #import "DownloadViewController.h"
 #import "PhotoCell.h"
 #import "DBFile.h"
+#import "Dropbox.h"
 
-@interface DownloadViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface DownloadViewController ()<UITableViewDelegate, UITableViewDataSource, NSURLSessionDownloadDelegate>
 
 @property (nonatomic, weak) IBOutlet UIProgressView *progress;
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
-//@property (nonatomic, weak) IBOutlet UIImageView *downloadedFileImageView;
 @property (nonatomic, weak) IBOutlet UILabel *filenameLabel;
+@property (nonatomic, weak) IBOutlet UILabel *messageLabel;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *cancelButton;
-
-@property (nonatomic, strong) NSString *path;
 
 @end
 
@@ -36,35 +35,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self showImage];
-//    [self downloadImage];
-}
-
--(void)showImage
-{
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    [config setHTTPAdditionalHeaders:@{@"Authorization": [Dropbox apiAuthorizationHeader]}];
+    _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
     _filenameLabel.text = [self.myImage.path lastPathComponent];
-//    _downloadedFileImageView.image = self.myImage.thumbNail;
 }
-
-/*
--(void)downloadImage
-{
-//    NSString *imageURL = [NSString stringWithFormat:@"https://api-content.dropbox.com/1/files/%@%@", self.thumbnail.root, self.thumbnail.path];
-    NSString *imageURL = @"http://www.freebsd.org/layout/images/beastie.png";
-    NSLog(@"imageURL: %@", imageURL);
-    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
-    NSURLSessionDownloadTask *getImageTask = [session downloadTaskWithURL:[NSURL URLWithString:imageURL] completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-        UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _downloadedFileImageView.image = self.myImage.thumbNail;
-//            _downloadedFileImageView.image = downloadedImage;
-        });
-    }];
-    
-    [getImageTask resume];
-}
-*/
 
 - (void)didReceiveMemoryWarning
 {
@@ -73,7 +48,6 @@
 }
 
 #pragma mark - UITableViewDatasource and UITableViewDelegate methods
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -87,9 +61,20 @@
     return 1;
 }
 
+// stackoverflow.com/questions/12551070/display-the-tableview-row-selected-in-nslog
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    _messageLabel.text = @"Tap Tap";
+    [self downloadImage];
+}
+
+-(void)downloadImage
+{
+    NSString *imageURL = [[NSString stringWithFormat:@"https://api-content.dropbox.com/1/files/%@%@", self.myImage.root, self.myImage.path] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //NSString *imageURL = @"http://www.freebsd.org/layout/images/beastie.png";
+    NSLog(@"imageURL: %@", imageURL);
+    NSURLSessionDownloadTask *getImageTask = [_session downloadTaskWithURL:[NSURL URLWithString:imageURL]];
+    [getImageTask resume];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -105,6 +90,25 @@
     
     // Configure the cell...
     return cell;
+}
+
+#pragma mark - NSURLSessionDownloadDelegate
+
+-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_progress setProgress:(double)totalBytesWritten / (double)totalBytesExpectedToWrite animated:YES];
+    });
+}
+
+-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
+{
+    NSLog(@"Image downloaded");
+}
+
+-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
+{
+    
 }
 
 /*
